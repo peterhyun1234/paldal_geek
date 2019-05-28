@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 
@@ -19,15 +20,15 @@ int main(int argc, char ** argv)
     struct sockaddr_in c_addr;
    
     // Socket Connection Configure
-    socket = socket(PF_INET,SOCK_STREAM,0);
+    c_socket = socket(PF_INET,SOCK_STREAM,0);
 
     memset(&c_addr,0,sizeof(c_addr));
     c_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     c_addr.sin_family = AF_INET;
-    c_addr.sin_port = htons(Port);
+    c_addr.sin_port = htons(PORT);
     
     // Device Driver Connection
-    int fd_but = open("/dev/button_mod",0_RDWR);
+    int fd_but = open("/dev/button_mod",O_RDWR);
     if( fd_but < 0 )
     {
         perror("Failed to open the device");
@@ -41,17 +42,17 @@ int main(int argc, char ** argv)
         close(c_socket);
         return -1;
     }
-
+    char c;
     while(1)
     {
         ioctl(fd_but, IOCTL_BUTTON_REQ, &but_value);
-        
+        printf("Button: %d\n",but_value); 
         if(but_value != -1)
         {
             send(c_socket, &but_value, sizeof(int), 0);
+            but_value = -1;
         }
 
-        but_value = -1;
         sleep(1);    
     }
 
