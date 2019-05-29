@@ -13,6 +13,8 @@
 
 #define BN 5
 #define PORT 9000
+#define IP  "127.0.0.1"
+#define BUFSIZE 10
 
 int main(int argc, char ** argv)
 {
@@ -23,7 +25,7 @@ int main(int argc, char ** argv)
     c_socket = socket(PF_INET,SOCK_STREAM,0);
 
     memset(&c_addr,0,sizeof(c_addr));
-    c_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    c_addr.sin_addr.s_addr = inet_addr(IP);
     c_addr.sin_family = AF_INET;
     c_addr.sin_port = htons(PORT);
     
@@ -36,20 +38,23 @@ int main(int argc, char ** argv)
     }
     
     // Socket Connection
+    printf("Connect to %s...\n",IP);
     if(connect(c_socket,(struct sockaddr *) &c_addr, sizeof(c_addr)) == -1)
     {
         printf("Connection Error\n");
         close(c_socket);
         return -1;
     }
-    char c;
+    
     while(1)
     {
         ioctl(fd_but, IOCTL_BUTTON_REQ, &but_value);
         printf("Button: %d\n",but_value); 
         if(but_value != -1)
         {
-            send(c_socket, &but_value, sizeof(int), 0);
+            char byte_value[BUFSIZE] = "";
+            sprintf(byte_value, "%d", but_value);
+            send(c_socket, byte_value, sizeof(byte_value), 0);
             but_value = -1;
         }
 
