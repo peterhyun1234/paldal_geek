@@ -11,7 +11,7 @@
 #define IOCTL_MAGIC_NUMBER	'B'
 #define IOCTL_BUTTON_REQ        _IO( IOCTL_MAGIC_NUMBER, 0)
 
-#define BN 5
+#define BN 5    // 12
 #define PORT 9000
 #define IP  "127.0.0.1"
 #define BUFSIZE 10
