@@ -6,7 +6,7 @@ from select import *
 import sys
 import logging
 from time import ctime
-
+import cabinet
 
 # log기록을 남기기 위한 변수
 logger = logging.getLogger("Leni")
@@ -16,7 +16,7 @@ logger.info("Start Server System")
 
 # 호스트, 포트와 버퍼 사이즈를 지정
 HOST = '127.0.0.1'
-PORT = 36789
+PORT = 9000 # 36789
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
 
@@ -68,8 +68,15 @@ while connection_list:
                 data = sock.recv(BUFSIZE)
                 if data:
                     logger.debug("INFO : [%s] 클라이언트로부터 [%s] 전달 받았습니다." % (ctime(), data))
-
-
+                    # 초음파센서
+                    #if data.find('U') != -1:
+                    # Enroll
+                    if data.find('1') != -1:
+                    # Open
+                    elif data.find('2') != -1:
+                    # Closed
+                    elif data.find('C') != -1:
+                        
 
                     # 접속한 Client에게 서버가 메시지를 전송한다 - - - - - - - - - - - - - My Part
                     sock.send("Hi Client?")
