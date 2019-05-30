@@ -11,7 +11,7 @@
 #define IOCTL_MAGIC_NUMBER	'B'
 #define IOCTL_BUTTON_REQ        _IO( IOCTL_MAGIC_NUMBER, 0)
 
-#define BN 5    // 12
+#define BN 8
 #define PORT 9000
 #define IP  "127.0.0.1"
 #define BUFSIZE 10
@@ -20,7 +20,7 @@ int main(int argc, char ** argv)
 {
     int c_socket, len, n, but_value = -1;
     struct sockaddr_in c_addr;
-   
+
     // Socket Connection Configure
     c_socket = socket(PF_INET,SOCK_STREAM,0);
 
@@ -28,7 +28,7 @@ int main(int argc, char ** argv)
     c_addr.sin_addr.s_addr = inet_addr(IP);
     c_addr.sin_family = AF_INET;
     c_addr.sin_port = htons(PORT);
-    
+
     // Device Driver Connection
     int fd_but = open("/dev/button_mod",O_RDWR);
     if( fd_but < 0 )
@@ -36,7 +36,7 @@ int main(int argc, char ** argv)
         perror("Failed to open the device");
         return -1;
     }
-    
+
     // Socket Connection
     printf("Connect to %s...\n",IP);
     if(connect(c_socket,(struct sockaddr *) &c_addr, sizeof(c_addr)) == -1)
@@ -45,7 +45,7 @@ int main(int argc, char ** argv)
         close(c_socket);
         return -1;
     }
-    
+
     while(1)
     {
         ioctl(fd_but, IOCTL_BUTTON_REQ, &but_value);
@@ -59,9 +59,10 @@ int main(int argc, char ** argv)
         }
 
         sleep(1);    
+
     }
 
     close(fd_but);
     close(c_socket);
-	return 0;
+    return 0;
 }

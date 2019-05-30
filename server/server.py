@@ -36,7 +36,6 @@ print('==============================================')
 # 무한 루프를 시작
 while connection_list:
     try:
-        logger.debug("INFO : 요청을 기다립니다.")
 
         # select 로 요청을 받고, 10초마다 블럭킹을 해제하도록 함
         read_socket, write_socket, error_socket = select(connection_list, [], [], 10)
@@ -47,10 +46,10 @@ while connection_list:
                 clientSocket, addr_info = serverSocket.accept()
                 connection_list.append(clientSocket)
                 logger.debug("INFO : [%s] 클라이언트(%s)가 새롭게 연결 되었습니다." % (ctime(), addr_info[0]))
-
                 # 서버소켓이 아닌 경우 방문을 환영한다는 message를 전송한다 - - - - - - - - - - - - - My Part
-                if connection_list[-1] != serverSocket: 
-                    connection_list[-1].send("[%s] 방문을 환영합니다. 반가워요 ^u^" %ctime()) 
+                if connection_list[-1] != serverSocket:
+                    print "Client Socket Connected"
+                    #connection_list[-1].send("[%s] 방문을 환영합니다. 반가워요 ^u^" %ctime()) 
                 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - My Part
 
                 # 전체 클라이언트로 응답을 돌려줌 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Original
@@ -66,16 +65,30 @@ while connection_list:
             # 접속한 사용자(클라이언트)로부터 새로운 데이터 받음
             else:
                 data = sock.recv(BUFSIZE)
+                ds = sock.fileno()
                 if data:
-                    logger.debug("INFO : [%s] 클라이언트로부터 [%s] 전달 받았습니다." % (ctime(), data))
+                    # Cabinet
+                    if ds == 4 || ds == 5:
+                        print "Cabinet"
+                    # Button
+                    elif ds == 6:
+                        print data
+                    # LCD
+                    #elif ds == 7:
+                    # RFID
+                    elif ds == 8:
+                        print "RFID"
+                    # Ultra Wave
+                    elif ds == 9:
+                        print "Ultra Wave"
                     # 초음파센서
                     #if data.find('U') != -1:
                     # Enroll
-                    if data.find('1') != -1:
+                    #if data.find('1') != -1:
                     # Open
-                    elif data.find('2') != -1:
+                    #elif data.find('2') != -1:
                     # Closed
-                    elif data.find('C') != -1:
+                    #elif data.find('C') != -1:
                         
 
                     # 접속한 Client에게 서버가 메시지를 전송한다 - - - - - - - - - - - - - My Part
