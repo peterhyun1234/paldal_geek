@@ -1,10 +1,11 @@
 import datetime
 
 class cabinet:
-    def __init__(self, sid, pwd, num):
+    def __init__(self, sid, pwd, num, isUse):
         self.id = sid
         self.pwd = pwd
         self.num = num
+        self.isUse = isUse
         self.enrollt = datetime.now()
 
     def checkTimeout(self):

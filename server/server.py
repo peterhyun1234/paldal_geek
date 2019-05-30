@@ -6,7 +6,14 @@ from select import *
 import sys
 import logging
 from time import ctime
-import cabinet
+from cabinet import cabinet
+
+# Variable Initialization
+lcd = ""
+lcdSock = 0
+lcdState = 0
+
+cl = [ cabinet('201420999','1234',4,true), cabinet('','',5,false) ]
 
 # log기록을 남기기 위한 변수
 logger = logging.getLogger("Leni")
@@ -45,6 +52,9 @@ while connection_list:
             if sock == serverSocket:
                 clientSocket, addr_info = serverSocket.accept()
                 connection_list.append(clientSocket)
+                # LCD Socket Assignment
+                if clientSocket.fileno() == 5: #7
+                    lcdSock = len(connection_list) - 1
                 logger.debug("INFO : [%s] 클라이언트(%s)가 새롭게 연결 되었습니다." % (ctime(), addr_info[0]))
                 # 서버소켓이 아닌 경우 방문을 환영한다는 message를 전송한다 - - - - - - - - - - - - - My Part
                 if connection_list[-1] != serverSocket:
@@ -68,11 +78,71 @@ while connection_list:
                 ds = sock.fileno()
                 if data:
                     # Cabinet
-                    if ds == 4 || ds == 5:
-                        print "Cabinet"
+                    #if ds == 4 || ds == 5:
+                    #    print "Cabinet"
                     # Button
-                    elif ds == 6:
-                        print data
+                    if ds == 4:
+                        # LCD First Display
+                        if lcdState == 0:
+                            if (data.find('1') != -1 || data.find('2') != -1) && lcd == '':
+                                lcd += data
+                                connection_list[lcdSock].send(lcd)
+                            elif data.find('6') != -1 && lcd == '1':
+                                lcdState = 1
+                                lcd = ''
+                                connection_list[lcdSock].send('Input cabinet\nNum:')
+                            elif data.find('6') != -1 && lcd == '2':
+                                lcdState = 2
+                                lcd = ''
+                                connection_list[lcdSock].send('Input cabinet\nNum:')
+                            elif data.find('7'):
+                                connection_list[lcdSock].send('I')
+                        # Enroll LCD
+                        elif lcdState == 1:
+                            if data.find('6'):
+                                target = int(lcd)
+                                for c in cl:
+                                    if target == c.num:
+                                        if c.isUse == true:
+                                            connection_list[lcdSock].send('Already Using')
+                                            sleep(1)
+                                            lcdState = 0
+                                            lcd = ''
+                                            conneciton_list[lcdSock].send('I')
+                                            break
+                                        else:
+                                            connection_list[lcdSock].send('Input Password')
+                                            lcdState = 11
+                                            lcd = ''
+                                            break
+                                    elif c == cl[-1]:
+                                        connection_list[lcdSock].send('There is no\nsuch Number')
+                                        sleep(1)
+                                        lcdState = 0
+                                        lcd = ''
+                                        connection_list[lcdSock].send('I')
+                            elif data.find('7'):
+                                if len(lcd) == 0:
+                                    connection_list[lcdSock].send('Underflow!!')
+                                    sleep(1)
+                                    lcdState = 0
+                                    lcd = ''
+                                    connection_list[lcdSock].send('I')
+                                else:
+                                   lcd = lcd.substring(0, lcd.length()-1)
+                            else:
+                                if len(lcd) <= 32:
+                                    lcd += data
+                                else:
+                                    connection_list[lcdSock].send('Overflow!!')
+                                    sleep(1)
+                                    lcdState = 0
+                                    lcd = ''
+                                    connection_list[lcdSock].send('I')
+                        elif lcdState == 2:
+                                print '2'
+                        elif lcdState == 11:
+                                print '11'
                     # LCD
                     #elif ds == 7:
                     # RFID
