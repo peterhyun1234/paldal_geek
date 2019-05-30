@@ -18,6 +18,13 @@
 
 #define PORT 9000
 #define IP   "127.0.0.1"
+#define Initial "1: A Day Enroll\n2: Open"
+
+void clear(int lcd)
+{
+    lcdClear(lcd);
+    lcdPosition(lcd,0,0);
+}
 
 int main()
 {
@@ -38,7 +45,7 @@ int main()
 
     // Socket Connection
     printf("Connect to %s...\n",IP);
-    if(connect(c_socket, (struct sockaddr *) &c_addr, sizeof(addr)) == -1)
+    if(connect(c_socket, (struct sockaddr *) &c_addr, sizeof(c_addr)) == -1)
     {
         printf("Connection Error");
         close(c_socket);
@@ -51,12 +58,22 @@ int main()
         printf ("lcd init failed! \n");
         return -1 ;
     }
+   
+    clear(lcd);
+    lcdPuts(lcd, Initial);
 
     while(1)
     {
-        recv(c_socket, &buf, sizeof(buf), 0);
-        lcdPosition(lcd,0,0);
-        lcdPuts(lcd, buf);
+        recv(c_socket, buf, sizeof(buf), 0);
+        if(buf[0] == 'I')
+        {
+            clear(lcd);
+        }
+        else
+        {
+            clear(lcd);
+            lcdPuts(lcd, buf);
+        }
         sleep(1);
     }
     close(c_socket);
