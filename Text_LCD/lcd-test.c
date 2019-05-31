@@ -65,16 +65,25 @@ int main()
     while(1)
     {
         recv(c_socket, buf, sizeof(buf), 0);
-        if(buf[0] == 'I')
+        printf("%s\n",buf);
+        if(buf[0] == '7')
         {
+            printf("Clear\n");
             clear(lcd);
+        }
+        else if(buf[0] == 'D')
+        {
+            printf("Initial\n");
+            clear(lcd);
+            lcdPuts(lcd, Initial);
         }
         else
         {
             clear(lcd);
             lcdPuts(lcd, buf);
         }
-        sleep(1);
+        memset(buf,0,sizeof(buf));
+        sleep(0.5);
     }
     close(c_socket);
 }
