@@ -5,6 +5,7 @@ from socket import *
 from select import *
 import sys
 import logging
+import time
 from time import ctime
 from cabinet import cabinet
 
@@ -13,7 +14,7 @@ lcd = ""
 lcdSock = 0
 lcdState = 0
 
-cl = [ cabinet('201420999','1234',4,true), cabinet('','',5,false) ]
+cl = [ cabinet('201420999','1234',4,True), cabinet('','',5,False) ]
 
 # log기록을 남기기 위한 변수
 logger = logging.getLogger("Leni")
@@ -84,14 +85,14 @@ while connection_list:
                     if ds == 4:
                         # LCD First Display
                         if lcdState == 0:
-                            if (data.find('1') != -1 || data.find('2') != -1) && lcd == '':
+                            if (data.find('1') != -1 or data.find('2') != -1) and lcd == '':
                                 lcd += data
                                 connection_list[lcdSock].send(lcd)
-                            elif data.find('6') != -1 && lcd == '1':
+                            elif data.find('6') != -1 and lcd == '1':
                                 lcdState = 1
                                 lcd = ''
                                 connection_list[lcdSock].send('Input cabinet\nNum:')
-                            elif data.find('6') != -1 && lcd == '2':
+                            elif data.find('6') != -1 and lcd == '2':
                                 lcdState = 2
                                 lcd = ''
                                 connection_list[lcdSock].send('Input cabinet\nNum:')
@@ -103,7 +104,7 @@ while connection_list:
                                 target = int(lcd)
                                 for c in cl:
                                     if target == c.num:
-                                        if c.isUse == true:
+                                        if c.isUse == True:
                                             connection_list[lcdSock].send('Already Using')
                                             sleep(1)
                                             lcdState = 0

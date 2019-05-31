@@ -6,10 +6,10 @@ class cabinet:
         self.pwd = pwd
         self.num = num
         self.isUse = isUse
-        self.enrollt = datetime.now()
+        self.enrollt = datetime.datetime.now()
 
     def checkTimeout(self):
-        now = datetime.now()
+        now = datetime.datetime.now()
         # 3 miniutes
         if (now - self.enrollt).seconds >= 180:
             return true
