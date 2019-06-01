@@ -12,7 +12,7 @@
 #define B3 22   // 3
 #define B4 23   // 4
 #define B5 24   // 5
-#define BE 25   // 6 - Enter
+#define BE 19   // 24 - Enter
 #define BD 4    // 7 - Delete
 
 MODULE_LICENSE("GPL");

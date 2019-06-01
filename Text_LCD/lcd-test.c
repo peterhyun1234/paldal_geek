@@ -9,7 +9,7 @@
 #include <sys/socket.h>
 
 //Pin numbers below are the WiringPi pin numbers
-#define LCD_RS  10              //Register select pin
+#define LCD_RS  25              //Register select pin
 #define LCD_E   11              //Enable Pin
 #define LCD_D4  26              //Data pin 4
 #define LCD_D5  27              //Data pin 5
