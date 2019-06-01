@@ -31,7 +31,7 @@ c2Sock = 0
 tts = gTTS(text='안녕하세요. 스마트 사물함입니다. 학번과 비밀번호 입력해주세요.',lang='ko')
 tts.save("hello.mp3")
 
-cl = [ cabinet('201420999','1234',4,True), cabinet('','',5,False) ]
+cl = [ cabinet('201420999','1234',4,True,False), cabinet('','',5,False,False) ]
 
 # log기록을 남기기 위한 변수
 logger = logging.getLogger("Leni")
@@ -100,6 +100,13 @@ while connection_list:
                 data = sock.recv(BUFSIZE)
                 data = data.decode()
                 ds = sock.fileno()
+                if cl[1].isUse == True:
+                    if cl[1].checkTimeout() == True:
+                        cl[1].isUse = False
+                        cl[1].isOpen = True
+                        cl[1].id = ''        
+                        cl[1].pwd = ''
+                        connection_list[c2Sock].send('O'.encode('utf-8'))
                 if data:
                     if data.find('201420999') != -1:
                         data = '201420999'                
@@ -213,6 +220,7 @@ while connection_list:
                                     cl[1].pwd = lcd
                                     cl[1].isUse = True
                                     cl[1].id = tid
+                                    cl[1].isOpen = False
                                     cl[1].enrollt = datetime.datetime.now()
                                     lcd = ""
                                     lcdState = 0
@@ -264,6 +272,7 @@ while connection_list:
                                             # Open Success!
                                             if c.pwd == lcd:
                                                 connection_list[lcdSock].send('Open Success!!'.encode('utf-8'))
+                                                c.isOpen = True
                                                 sleep(1)
                                                 lcd = ""
                                                 lcdState = 0
