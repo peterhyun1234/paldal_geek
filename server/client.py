@@ -6,7 +6,7 @@ import sys
 
 
 HOST = '127.0.0.1'
-PORT = 36789
+PORT = 9000
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
 

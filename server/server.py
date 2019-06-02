@@ -70,12 +70,14 @@ while connection_list:
             if sock == serverSocket:
                 clientSocket, addr_info = serverSocket.accept()
                 connection_list.append(clientSocket)
-                # if clientSocket.fileno() == 4:
-                #     c1Sock = len(connection_list) - 1
-                # elif clientSocket.fileno() == 5:
-                #     c2Sock = len(connection_list) - 1
-                # LCD Socket Assignment
-                if clientSocket.fileno() == 5: #7
+                # Cabinet 1
+                if clientSocket.fileno() == 4:
+                    c1Sock = len(connection_list) - 1
+                # Cabinet 2
+                elif clientSocket.fileno() == 5:
+                    c2Sock = len(connection_list) - 1
+                #LCD Socket Assignment
+                if clientSocket.fileno() == 7:
                     lcdSock = len(connection_list) - 1
 
                 logger.debug("INFO : [%s] 클라이언트(%s)가 새롭게 연결 되었습니다." % (ctime(), addr_info[0]))
@@ -96,6 +98,7 @@ while connection_list:
                 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Original
 
             # 접속한 사용자(클라이언트)로부터 새로운 데이터 받음
+            # O: 사물함 열기, C: 닫기, N: LED 키기, F: 끄기
             else:
                 data = sock.recv(BUFSIZE)
                 data = data.decode()
@@ -106,7 +109,9 @@ while connection_list:
                         cl[1].isOpen = True
                         cl[1].id = ''        
                         cl[1].pwd = ''
+                        # 사물함 열고 LED 끄고 반납
                         connection_list[c2Sock].send('O'.encode('utf-8'))
+                        connection_list[c2Sock].send('F'.encode('utf-8'))
                 if data:
                     if data.find('201420999') != -1:
                         data = '201420999'                
@@ -124,11 +129,13 @@ while connection_list:
                         data = '6'
                     elif data.find('7') != -1:
                         data = '7'
+                    elif data.find('C') != -1:
+                        data = 'C'
                     # Cabinet
                     #if ds == 4 || ds == 5:
                     #    print "Cabinet"
                     # Button
-                    if ds == 4:
+                    if ds == 6:
                         print("Data: " + data + ", LCD: " + lcd + ", LCD Len: " + str(len(lcd)) + ", Status: " + str(lcdState))
                         # LCD First Display
                         if lcdState == 0:
@@ -222,6 +229,7 @@ while connection_list:
                                     cl[1].id = tid
                                     cl[1].isOpen = False
                                     cl[1].enrollt = datetime.datetime.now()
+                                    connection_list[c2Sock].send('N'.encode('utf-8'))
                                     lcd = ""
                                     lcdState = 0
                                     tid = ""
@@ -243,7 +251,7 @@ while connection_list:
                                     connection_list[lcdSock].send(lcd.encode('utf-8'))
                         # Open Cabinet
                         elif lcdState == 2:
-                            if data.find('6') != -1:
+                            if data.find('6') != -1 and len(lcd) != 0:
                                 connection_list[lcdSock].send('Please Four Length PWD'.encode('utf-8'))
                                 tn = int(lcd)
                                 lcdState = 21
@@ -272,6 +280,7 @@ while connection_list:
                                             # Open Success!
                                             if c.pwd == lcd:
                                                 connection_list[lcdSock].send('Open Success!!'.encode('utf-8'))
+                                                connection_list[c2Sock].send('O'.encode('utf-8'))
                                                 c.isOpen = True
                                                 sleep(1)
                                                 lcd = ""
@@ -308,7 +317,7 @@ while connection_list:
                                
                     # 초음파
                     # 8
-                    elif ds == 6:
+                    elif ds == 8:
                         if data.find('1') != -1:
                             check_list[0]= check_list[1]
                             check_list[1]= 1
@@ -321,17 +330,23 @@ while connection_list:
                             print("멀어짐")
                     # RFID
                     # 9
-                    elif ds == 7:
+                    elif ds == 9:
                         for c in cl:
                             # print("Data: " + data)
                             # print(len(data))
                             if str(c.id) == data:
                                 if c.isUse == True:
+                                    c.isOpen = True
                                     print("RFID로 사물함 열기")
-                                    # if c.num == c1Sock:
-                                    #     connection_list[c1Sock].send('O'.encode('utf-8'))
-                                    # if c.num == c2Sock:
-                                    #     connection_list[c2Sock].send('O'.encode('utf-8'))
+                                    connection_list[c1Sock].send('O'.encode('utf-8'))
+                    # Cabinet 1
+                    elif ds == c1Sock:
+                        if data.find('C') != -1:
+                            cl[0].isOpen = False
+                    # Cabinet 2
+                    elif ds == c2Sock:
+                        if data.find('C') != -1:
+                            cl[1].isOpen = False
                     # 서버소켓이 아니며 자기자신이닌 연결 소켓들에게 메시지를 전체 전송하는 부분 - - - - - - - - - - - - - - - - - - - - - - - - - - - - Original
                     '''for socket_in_list in connection_list:
                         if socket_in_list != serverSocket and socket_in_list != sock:
