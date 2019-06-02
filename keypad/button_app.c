@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
     while(1)
     {
         ioctl(fd_but, IOCTL_BUTTON_REQ, &but_value);
-        printf("Button: %d\n",but_value); 
+        //printf("Button: %d\n",but_value); 
         if(but_value != -1)
         {
             char byte_value[BUFSIZE] = "";
