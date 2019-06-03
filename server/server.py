@@ -19,6 +19,7 @@ tid = ""
 tn = -1
 lcdSock = 0
 lcdState = 0
+speak = 0
 
 # Ultra Sonic Variable Initialization
 ultra_sonic_value = 0
@@ -328,8 +329,12 @@ while connection_list:
                             check_list[0]= check_list[1]
                             check_list[1]= 1
                             #print("가까워짐")
-                            if check_list[0] == 2 and check_list[1] == 1:
+                            if check_list[0] == 2 and check_list[1] == 1 and speak == 0:
                                 os.system("mpg321 hello.mp3")
+                                speak = datetime.datetime.now()
+                            elif check_list[0] == 2 and check_list[1] == 1 and (speak - datetime.datetime.now()).seconds >= 120:
+                                os.system("mpg321 hello.mp3")
+                                speak = datetime.datetime.now()
                         if data.find('2') != -1:
                             check_list[0]= check_list[1]
                             check_list[1]= 2
