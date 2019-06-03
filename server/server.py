@@ -40,7 +40,9 @@ logger.setLevel(logging.DEBUG)
 logger.info("Start Server System")
 
 # 호스트, 포트와 버퍼 사이즈를 지정
-HOST = '127.0.0.1'
+HOST = '192.168.1.134'
+#HOST = '192.168.24.147'
+#HOST = '127.0.0.1'
 PORT = 9000 # 36789
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
@@ -55,7 +57,7 @@ serverSocket.bind(ADDR)
 serverSocket.listen(10)
 connection_list = [serverSocket]
 print('==============================================')
-print('영화 서버를 시작합니다. %s 포트로 접속을 기다립니다.' % str(PORT))
+print(' 서버를 시작합니다. %s 포트로 접속을 기다립니다.' % str(PORT))
 print('==============================================')
 
 # 무한 루프를 시작
@@ -114,7 +116,9 @@ while connection_list:
                         connection_list[c2Sock].send('F'.encode('utf-8'))
                 if data:
                     if data.find('201420999') != -1:
-                        data = '201420999'                
+                        data = '201420999'
+                    elif data.find('0') != -1:
+                        data = '0'
                     elif data.find('1') != -1:
                         data = '1'
                     elif data.find('2') != -1:
@@ -321,13 +325,13 @@ while connection_list:
                         if data.find('1') != -1:
                             check_list[0]= check_list[1]
                             check_list[1]= 1
-                            print("가까워짐")
+                            #print("가까워짐")
                             if check_list[0] == 2 and check_list[1] == 1:
                                 os.system("mpg321 hello.mp3")
                         if data.find('2') != -1:
                             check_list[0]= check_list[1]
                             check_list[1]= 2
-                            print("멀어짐")
+                            #print("멀어짐")
                     # RFID
                     # 9
                     elif ds == 9:
@@ -342,10 +346,12 @@ while connection_list:
                     # Cabinet 1
                     elif ds == c1Sock:
                         if data.find('C') != -1:
+                            print("4th Cabinet Closed")
                             cl[0].isOpen = False
                     # Cabinet 2
                     elif ds == c2Sock:
                         if data.find('C') != -1:
+                            print("5th Cabinet Closed")
                             cl[1].isOpen = False
                     # 서버소켓이 아니며 자기자신이닌 연결 소켓들에게 메시지를 전체 전송하는 부분 - - - - - - - - - - - - - - - - - - - - - - - - - - - - Original
                     '''for socket_in_list in connection_list:

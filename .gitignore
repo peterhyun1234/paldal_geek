@@ -50,3 +50,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# ECT
+server_ex
+server/ultra
+server/__pycache__/
+server/.cabinet.py.swp
+keypad/button_app
+Text_LCD/.lcd-test.c.swp
+Text_LCD/lcd-test

@@ -13,7 +13,7 @@
 
 #define BN 8
 #define PORT 9000
-#define IP  "127.0.0.1"
+#define IP  "192.168.1.134"
 #define BUFSIZE 10
 
 int main(int argc, char ** argv)

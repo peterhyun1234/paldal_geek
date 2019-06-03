@@ -17,7 +17,7 @@
 #define LCD_D7  29              //Data pin 7
 
 #define PORT 9000
-#define IP   "127.0.0.1"
+#define IP   "192.168.1.134"
 #define Initial "1: A Day Enroll\n2: Open"
 
 void clear(int lcd)
@@ -68,12 +68,12 @@ int main()
         printf("%s\n",buf);
         if(buf[0] == '7')
         {
-            printf("Clear\n");
+            //printf("Clear\n");
             clear(lcd);
         }
         else if(buf[0] == 'D')
         {
-            printf("Initial\n");
+            //printf("Initial\n");
             clear(lcd);
             lcdPuts(lcd, Initial);
         }

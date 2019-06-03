@@ -9,7 +9,7 @@
 #include <sys/socket.h>
 
 #define PORT 9000
-#define IP  "127.0.0.1"
+#define IP  "192.168.1.134"
 #define BUFSIZE 10
 
 int main (int argc, char *argv[])
@@ -60,7 +60,7 @@ int main (int argc, char *argv[])
         while (digitalRead(echo) == 1); //
         end_time = micros() ;
         distance = (end_time - start_time) / 29. / 2. ; //시간의 차이를 이용해서 거리 도출
-        printf("distance:%f\n",distance);
+        // printf("distance:%f\n",distance);
 
 	if(distance < 50)
         {
