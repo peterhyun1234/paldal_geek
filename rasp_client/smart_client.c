@@ -92,9 +92,10 @@ void * control_door(void * arg)   // send thread main
         {
             softPwmWrite(SV, 24);
         }
-        else if(cmd == 'C') // door close
+        else if((cmd == 'C')||(door_state == 1)) // door close
         {
             softPwmWrite(SV, 5);
+			door_state == 0;
         }
         else if(cmd == 'N') //LED ON
         {
@@ -117,6 +118,7 @@ void *magnetic_sensor(void * arg)   // read thread main
     char cmd;
     int mag;
     int cnt = 0;
+	int open = 0;
 
     wiringPiSetup();
     pinMode(MAG, INPUT);
@@ -127,6 +129,7 @@ void *magnetic_sensor(void * arg)   // read thread main
         printf("mag = %d, cnt = %d\n", mag, cnt);
         if(mag == LOW) //door open
         {
+			open = 1;
             while(1)    //waiting for 5 minites
             {
                 mag = digitalRead(MAG);
@@ -135,7 +138,7 @@ void *magnetic_sensor(void * arg)   // read thread main
                 if(mag == HIGH)
                     break;
 
-                if(cnt == 10)
+                if(cnt == 500)	// still open state after 5minites
                 {
                     cmd = 'O';
                     send(sock, &cmd, sizeof(char),0);
@@ -145,6 +148,13 @@ void *magnetic_sensor(void * arg)   // read thread main
             cnt = 0;
 
         }
+
+		if(open == 1)	//auto closing system
+		{
+			sleep(3);
+			door_state = 1;
+		}
+		open = 0;
         sleep(1);
     }
     return NULL;
