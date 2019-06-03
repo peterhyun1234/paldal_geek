@@ -135,6 +135,8 @@ while connection_list:
                         data = '7'
                     elif data.find('C') != -1:
                         data = 'C'
+                    elif data.find('O') != -1:
+                        data = 'O'
                     # Cabinet
                     #if ds == 4 || ds == 5:
                     #    print "Cabinet"
@@ -348,11 +350,15 @@ while connection_list:
                         if data.find('C') != -1:
                             print("4th Cabinet Closed")
                             cl[0].isOpen = False
+                        elif data.find('O') != -1:
+                            print("4th Cabinet is opened too long. Please Close the cabinet.")
                     # Cabinet 2
                     elif ds == c2Sock:
                         if data.find('C') != -1:
                             print("5th Cabinet Closed")
                             cl[1].isOpen = False
+                        elif data.find('O') != -1:
+                            print("5th Cabinet is opened too long. Please Close the cabinet.")
                     # 서버소켓이 아니며 자기자신이닌 연결 소켓들에게 메시지를 전체 전송하는 부분 - - - - - - - - - - - - - - - - - - - - - - - - - - - - Original
                     '''for socket_in_list in connection_list:
                         if socket_in_list != serverSocket and socket_in_list != sock:
