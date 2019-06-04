@@ -9,7 +9,7 @@
 #include <sys/socket.h>
 
 #define PORT 9000
-#define IP  "192.168.1.134"
+#define IP  "192.168.28.41"
 #define BUFSIZE 10
 
 int main (int argc, char *argv[])

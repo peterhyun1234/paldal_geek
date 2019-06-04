@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 from cabinet import cabinet
 
-HOST = '192.168.1.134'
+HOST = '192.168.28.41'
 PORT = 9000
 BUFSIZE = 1024
 ADDR = (HOST, PORT)

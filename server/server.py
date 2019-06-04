@@ -41,7 +41,7 @@ logger.setLevel(logging.DEBUG)
 logger.info("Start Server System")
 
 # 호스트, 포트와 버퍼 사이즈를 지정
-HOST = '192.168.1.134'
+HOST = '192.168.28.41'
 #HOST = '192.168.24.147'
 #HOST = '127.0.0.1'
 PORT = 9000 # 36789
