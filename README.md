@@ -24,4 +24,5 @@ Smart Locker - System Programming Team Project
 ## 5. Server
     python3 server.py
 
+## 6. Artifacts
 ![Capture](https://github.com/SiverPineValley/paldal_geek/blob/master/Capture.jpg?raw=true)
